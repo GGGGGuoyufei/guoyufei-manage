@@ -35,7 +35,7 @@ export default {
   },
   methods:{
     Login(){
-      
+      this.$router.push('/home')
     }
   }
 }

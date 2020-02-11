@@ -1,55 +1,184 @@
 <template>
-  <div class="aside" style="width:430px">
-    <el-row class="tac">
-      <el-col :span="12">
-				<el-menu
-					default-active="2"
-					class="el-menu-vertical-demo"
-					background-color="#545c64"
-					text-color="#fff"
-					active-text-color="#ffd04b">
-					<el-submenu index="1">
-						<template slot="title">
-							<i class="el-icon-location"></i>
-							<span>系统首页</span>
-						</template>
-						<el-menu-item-group>
-							<el-menu-item index="1-1" @click="goto('/tabs')">基础表格</el-menu-item>
-							<el-menu-item index="1-3" @click="goto('/group')">组织管理</el-menu-item>
-							<el-menu-item index="1-2" @click="goto('/menu')">菜单管理</el-menu-item>
-						</el-menu-item-group>
-					</el-submenu>
-				</el-menu>
-			</el-col>
-    </el-row>
-  </div>
+    <!-- 左侧页签部分 -->
+    <div class="sidebar">
+      <el-menu class="sidebar-el-menu" :default-active="onRoutes"
+        :collapse="collapse"  background-color="#324157" text-color="#bfcbd9"
+        active-text-color="#20a0ff" unique-opened router >
+        <template v-for="item in items">
+          <template v-if="item.subs">
+            <el-submenu :index="item.index" :key="item.index">
+                <template slot="title">
+                        <i :class="item.icon"></i>
+                        <span slot="title">{{ item.title }}</span>
+                </template>
+                <template v-for="subItem in item.subs">
+                    <el-submenu
+                        v-if="subItem.subs"
+                        :index="subItem.index"
+                        :key="subItem.index"
+                    >
+                        <template slot="title">{{ subItem.title }}</template>
+                        <el-menu-item
+                            v-for="(threeItem,i) in subItem.subs"
+                            :key="i"
+                            :index="threeItem.index"
+                        >{{ threeItem.title }}</el-menu-item>
+                    </el-submenu>
+                    <el-menu-item
+                        v-else
+                        :index="subItem.index"
+                        :key="subItem.index"
+                    >{{ subItem.title }}</el-menu-item>
+                </template>
+            </el-submenu>
+        </template>
+          <template v-else>
+            <el-menu-item :index="item.index" :key="item.index">
+                <i :class="item.icon"></i>
+                <span slot="title">{{ item.title }}</span>
+            </el-menu-item>
+          </template>
+        </template>
+      </el-menu>
+    </div>
 </template>
 
 <script>
-
-
+// import bus from '../common/bus';
 export default {
-  data(){
-    return{
-
-    }
-  },
-  methods:{
-		goto(path){
-			this.$router.push(path)
-			//alert('哈哈')
-		}
+	data() {
+		return {
+			collapse: false,
+			items: [
+					{
+							icon: 'el-icon-s-home',
+							index: 'home',
+							title: '系统首页'
+					},
+					{
+							icon: 'el-icon-s-grid',
+							index: 'tabs',
+							title: '基础表格'
+					},
+					{
+							icon: 'el-icon-s-custom',
+							index: 'group',
+							title: '组织管理'
+					},
+					{
+							icon: 'el-icon-menu',
+							index: 'menu',
+							title: '菜单管理'
+					},
+					{
+							icon: 'el-icon-s-custom',
+							index: '3',
+							title: '表单相关',
+							subs: [
+									{
+											index: 'form',
+											title: '基本表单'
+									},
+									{
+											index: '3-2',
+											title: '三级菜单',
+											subs: [
+													{
+															index: 'editor',
+															title: '富文本编辑器'
+													},
+													{
+															index: 'markdown',
+															title: 'markdown编辑器'
+													}
+											]
+									},
+									{
+											index: 'upload',
+											title: '文件上传'
+									}
+							]
+					},
+					{
+							icon: 'el-icon-s-custom',
+							index: 'icon',
+							title: '自定义图标'
+					},
+					{
+							icon: 'el-icon-s-custom',
+							index: 'charts',
+							title: 'schart图表'
+					},
+					{
+							icon: 'el-icon-s-custom',
+							index: '6',
+							title: '拖拽组件',
+							subs: [
+									{
+											index: 'drag',
+											title: '拖拽列表'
+									},
+									{
+											index: 'dialog',
+											title: '拖拽弹框'
+									}
+							]
+					},
+					{
+							icon: 'el-icon-s-custom',
+							index: 'i18n',
+							title: '国际化功能'
+					},
+					{
+							icon: 'el-icon-s-custom',
+							index: '7',
+							title: '错误处理',
+							subs: [
+									{
+											index: 'permission',
+											title: '权限测试'
+									},
+									{
+											index: '404',
+											title: '404页面'
+									}
+							]
+					},
+					{
+							icon: 'el-icon-s-custom',
+							index: '/donate',
+							title: '支持作者'
+					}
+			]
+		};
+	},
+	computed: {
+			onRoutes() {
+					return this.$route.path.replace('/', '');
+			}
+	},
+	created() {
+		
 	}
-}
+};
 </script>
 
-<style>
-.el-aside {
-  color: #333;
-  background:#263238;
-  position: absolute;
-  left:0;
-  top:50px;
-  bottom:0;
+<style scoped>
+.sidebar {
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 70px;
+    bottom: 0;
+    overflow-y: scroll;
+}
+.sidebar::-webkit-scrollbar {
+    width: 0;
+}
+.sidebar-el-menu:not(.el-menu--collapse) {
+    width: 250px;
+}
+.sidebar > ul {
+    height: 100%;
 }
 </style>

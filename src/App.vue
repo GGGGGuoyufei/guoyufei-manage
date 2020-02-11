@@ -13,8 +13,15 @@ export default {
 </script>
 
 <style>
-  #app{
-    width:100%;
-    height:100%;
-  }
+html,
+body,
+#app,
+.wrapper {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+body {
+    font-family: 'PingFang SC', "Helvetica Neue", Helvetica, "microsoft yahei", arial, STHeiTi, sans-serif;
+}
 </style>
