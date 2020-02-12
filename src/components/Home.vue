@@ -2,7 +2,7 @@
   <div class="wrapper">
     <Header/>
     <Aside/>
-    <div class="content-box" :class="{'content-collapse':collapse}">
+    <div class="content-box">
       <Tags/>
       <div class="content">
         <transition name="move" mode="out-in">
@@ -10,7 +10,7 @@
                 <router-view></router-view>
             </keep-alive>
         </transition>
-        <el-backtop target=".content"></el-backtop>
+        <!-- <el-backtop target=".content"></el-backtop> -->
       </div>
     </div>
     
@@ -18,9 +18,9 @@
 </template>
 
 <script>
-import Header from '../../components/Header.vue'
-import Aside from '../../components/Aside.vue'
-import Tags from '../../components/tags.vue'
+import Header from './Header.vue'
+import Aside from './Aside.vue'
+import Tags from './tags.vue'
 export default {
   components:{
     Header,
@@ -35,8 +35,14 @@ export default {
   methods:{
     
   },
-  mounted(){
-    
+  created(){
+    this.$globalEventBus.$on('tags', msg => {
+          let arr = [];
+          for (let i = 0, len = msg.length; i < len; i++) {
+              msg[i].name && arr.push(msg[i].name);
+          }
+          this.tagsList = arr;
+      })
   }
 }
 </script>

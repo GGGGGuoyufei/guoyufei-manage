@@ -44,7 +44,6 @@
 </template>
 
 <script>
-// import bus from '../common/bus';
 export default {
 	data() {
 		return {
@@ -52,12 +51,12 @@ export default {
 			items: [
 					{
 							icon: 'el-icon-s-home',
-							index: 'home',
+							index: 'dashboard',
 							title: '系统首页'
 					},
 					{
 							icon: 'el-icon-s-grid',
-							index: 'tabs',
+							index: 'table',
 							title: '基础表格'
 					},
 					{
@@ -158,6 +157,11 @@ export default {
 			}
 	},
 	created() {
+		// this.$globalEventBus.$on('collapse', msg => {
+		// 		this.collapse = msg;
+		// 		this.$globalEventBus.$emit('collapse-content', msg);
+		// 		window.console.log('msg',msg)
+		// });
 		
 	}
 };

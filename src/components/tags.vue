@@ -1,11 +1,11 @@
 <template>
-  <div class="tags">
+  <div class="tags" v-if="showTags">
     <ul>
-      <li class="tags-li" >
-        <router-link to="tabs" class="tags-li-title">
-            首页
+      <li class="tags-li" v-for="(item,index) in tagsList" :class="{'active': isActive(item.path)}" :key="index">
+        <router-link :to="item.path" class="tags-li-title">
+            {{item.title}}
         </router-link>
-        <span class="tags-li-icon" @click="closeTags()"><i class="el-icon-close"></i></span>
+        <span class="tags-li-icon" @click="closeTags(index)"><i class="el-icon-close"></i></span>
       </li>
    </ul>
 		<div class="tags-close-box">
@@ -25,28 +25,89 @@
 <script type="text/ecmascript-6">
   export default {
 		data() {
-				return {
-						
-				}
-		},
-		methods: {
-			//关闭页签
-			closeTags(){
-				alert('关闭页签')
-			},
-			//关闭其他
-			other(){
-
-			},
-			//关闭所有
-			all(){
-
-			},
-			//
-			handleTags(){
-				alert('我被触发了')
+			return {
+					tagsList: []
 			}
 		},
+		methods: {
+			isActive(path) {
+				return path === this.$route.fullPath;
+			},
+			//关闭单个页签
+			closeTags(index){
+				const delItem = this.tagsList.splice(index,1)[0]//
+				const item = this.tagsList[index] ? this.tagsList[index] : this.tagsList[index - 1];
+				if(item){
+						delItem.path === this.$route.fullPath && this.$router.push(item.path)
+				}else{
+						this.$router.push('/')
+				}
+			},
+			//关闭全部标签
+			closeAll(){
+				this.tagsList = [];
+				this.$router.push('/');
+			},
+			//关闭其他标签
+			closeOther(){
+				const curItem = this.tagsList.filter(item => {
+						return item.path === this.$route.fullPath;//过滤掉数组里和当前路由不一样的每一项，并将返回值赋值给数组
+				})
+				this.tagsList = curItem;
+			},
+			//
+			handleTags(command){
+				command === 'other' ? this.closeOther() : this.closeAll();
+			},
+			// 设置标签/添加
+			setTags(route){      
+				const isExist = this.tagsList.some(item => {
+						return item.path === route.fullPath;
+				})
+				if(!isExist){
+						if(this.tagsList.length >= 8){
+								this.tagsList.shift();
+						}
+						this.tagsList.push({
+								title: route.meta.title,
+								path: route.fullPath,
+								name: route.matched[1].components.default.name
+						})
+				}
+				this.$globalEventBus.$emit('tags', this.tagsList);
+			},
+			
+		},
+		computed: {
+			showTags() {
+					return this.tagsList.length > 0;
+			}
+		},
+		watch:{
+				$route(newValue){
+						this.setTags(newValue);
+				}
+		},
+		created(){
+			this.setTags(this.$route);
+			// 监听关闭当前页面的标签页
+			this.$globalEventBus.$on('close_current_tags', () => {
+					for (let i = 0, len = this.tagsList.length; i < len; i++) {
+							const item = this.tagsList[i];
+							if(item.path === this.$route.fullPath){
+									if(i < len - 1){
+											this.$router.push(this.tagsList[i+1].path);
+									}else if(i > 0){
+											this.$router.push(this.tagsList[i-1].path);
+									}else{
+											this.$router.push('/');
+									}
+									this.tagsList.splice(i, 1);
+									break;
+							}
+					}
+			})
+		}
   }
 </script>
 
@@ -121,5 +182,9 @@
         box-shadow: -3px 0 15px 3px rgba(0, 0, 0, .1);
         z-index: 10;
     }
-
+.active {
+    color: #17B3A3;
+    background:#409EFF; 
+    border-bottom:1.5px solid #17B3A3;
+}
 </style>

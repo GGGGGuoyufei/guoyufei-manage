@@ -14,6 +14,8 @@ const originalPush = Router.prototype.push
 Router.prototype.push = function push(location) {
     return originalPush.call(this, location).catch(err => err)
 }
+
+Vue.prototype.$globalEventBus =new Vue()
 new Vue({
     render: h => h(App),
     router
