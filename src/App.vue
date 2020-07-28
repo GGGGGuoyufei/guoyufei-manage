@@ -1,6 +1,8 @@
 <template>
   <div id="app">
-    <router-view></router-view>
+    <keep-alive>
+      <router-view></router-view>
+    </keep-alive>
   </div>
 </template>
 
@@ -8,7 +10,13 @@
 
 
 export default {
-  
+    watch:{
+      '$route'(to){
+        document.title=`${to.meta.title}|管理系统`;
+        // document.title=`${to.name}|管理系统`;
+        // console.log(to)
+      }
+    }
 }
 </script>
 

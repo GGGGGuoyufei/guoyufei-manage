@@ -6,14 +6,14 @@
       </div>
       <div class="input-wrapp">
         <div>
-          <el-input placeholder="请输入用户名" v-model="userName">
+          <el-input placeholder="请输入用户名" v-model="username">
             <template slot="prepend">
               <i class="el-icon-user"></i>
             </template>
           </el-input>
         </div>
         <div>
-          <el-input placeholder="请输入密码" v-model="passWord">
+          <el-input type="password" placeholder="请输入密码" v-model="password">
             <template slot="prepend">
               <i class="el-icon-goods"></i>
             </template>
@@ -26,16 +26,30 @@
 </template>
 
 <script>
+import {reqLogin} from '../../api/index'
+import storeUtils from '../../utils/storeUtils.js'
 export default {
   data(){
     return{
-      userName:'',
-      passWord:''
+      username:'',
+      password:''
     }
   },
   methods:{
     Login(){
-      this.$router.push('/')
+      const {username,password} = this
+      reqLogin(username,password).then((res)=>{
+        if(res.status === 0){
+          this.$router.push('/')
+          this.$message({
+            message: `${res.data.username}登录成功`,
+            type: 'success'
+          })
+          storeUtils.saveUser(res.data)
+        }else{
+          this.$message.error(res.msg)
+        }
+      })
     }
   }
 }

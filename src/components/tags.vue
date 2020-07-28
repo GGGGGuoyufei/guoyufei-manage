@@ -35,7 +35,7 @@
 			},
 			//关闭单个页签
 			closeTags(index){
-				const delItem = this.tagsList.splice(index,1)[0]//
+				const delItem = this.tagsList.splice(index,1)[0]
 				const item = this.tagsList[index] ? this.tagsList[index] : this.tagsList[index - 1];
 				if(item){
 						delItem.path === this.$route.fullPath && this.$router.push(item.path)
@@ -51,7 +51,7 @@
 			//关闭其他标签
 			closeOther(){
 				const curItem = this.tagsList.filter(item => {
-						return item.path === this.$route.fullPath;//过滤掉数组里和当前路由不一样的每一项，并将返回值赋值给数组
+						return item.path === this.$route.fullPath;
 				})
 				this.tagsList = curItem;
 			},
@@ -90,7 +90,6 @@
 		},
 		created(){
 			this.setTags(this.$route);
-			// 监听关闭当前页面的标签页
 			this.$globalEventBus.$on('close_current_tags', () => {
 					for (let i = 0, len = this.tagsList.length; i < len; i++) {
 							const item = this.tagsList[i];
